@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Hubble Wallpaper</string>
+    <string name="title">This is a list of latest Hubble Images. The latest image is set as your Wallpaper automatically.\nThis app downloads images in background and may incur mobile data charges.\nApps4Av Inc.</string>
+</resources>
