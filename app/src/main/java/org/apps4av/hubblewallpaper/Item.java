@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by zkhan on 1/1/18.
@@ -59,9 +60,11 @@ public class Item {
     public static String formatDate(String webDate) {
         // convert hubble time to sqlite time
         DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss Z");
+        df.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             Date result =  df.parse(webDate);
             df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
             return df.format(result);
         } catch (ParseException e) {
             e.printStackTrace();
