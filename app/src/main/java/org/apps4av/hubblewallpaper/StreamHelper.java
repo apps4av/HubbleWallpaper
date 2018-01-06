@@ -17,8 +17,12 @@ public class StreamHelper {
 
         for (Item i : items) {
 
-            String selection = StreamContract.URL + "= ?";
-            String selectionArg[] = new String[] {i.getUrl()};
+            String selection = StreamContract.DATE + "= ?";
+            String date = Item.formatDate(i.getDate());
+            if(null == date) {
+                continue;
+            }
+            String selectionArg[] = new String[] {date};
 
             Cursor c = ctx.getContentResolver().query(StreamContract.CONTENT_URI, null, selection, selectionArg, StreamContract.DATE + " DESC");
             if (null != c) {
@@ -32,14 +36,17 @@ public class StreamHelper {
             Bitmap b = BitmapUtils.getBitmapFromURL(i.getUrl());
 
             if (null != b) {
-                ContentValues values = new ContentValues();
-                values.put(StreamContract.TITLE, i.getTitle());
-                values.put(StreamContract.DATE, i.getDate());
-                values.put(StreamContract.URL, i.getUrl());
-                values.put(StreamContract.LINK, i.getLink());
-                values.put(StreamContract.IMAGEBLOB, BitmapUtils.getBytes(b));
-                values.put(StreamContract.DESCRIPTION, i.getDescription());
-                ctx.getContentResolver().insert(StreamContract.CONTENT_URI, values);
+                date = Item.formatDate(i.getDate());
+                if(null != date) {
+                    ContentValues values = new ContentValues();
+                    values.put(StreamContract.TITLE, i.getTitle());
+                    values.put(StreamContract.DATE, date);
+                    values.put(StreamContract.URL, i.getUrl());
+                    values.put(StreamContract.LINK, i.getLink());
+                    values.put(StreamContract.IMAGEBLOB, BitmapUtils.getBytes(b));
+                    values.put(StreamContract.DESCRIPTION, i.getDescription());
+                    ctx.getContentResolver().insert(StreamContract.CONTENT_URI, values);
+                }
             }
         }
     }

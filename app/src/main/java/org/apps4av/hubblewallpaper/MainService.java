@@ -3,8 +3,14 @@ package org.apps4av.hubblewallpaper;
 import android.app.Service;
 import android.app.WallpaperManager;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,6 +27,8 @@ public class MainService extends Service {
     // update time
     private static final int ONE_HOUR = 60 * 60 * 1000;
 
+    private Bitmap mScreenBitmap;
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -29,6 +37,7 @@ public class MainService extends Service {
 
     public void onDestroy() {
         super.onDestroy();
+        mScreenBitmap.recycle();
 
         mTimer.cancel();
     }
@@ -39,6 +48,14 @@ public class MainService extends Service {
 
         mWallpaperManager
                 = WallpaperManager.getInstance(getApplicationContext());
+
+        // find screen size and create bitmap its size
+        Resources resources = getResources();
+        Configuration config = resources.getConfiguration();
+        DisplayMetrics dm = resources.getDisplayMetrics();
+        double ws = (double)config.screenWidthDp * dm.density;
+        double hs = ws * dm.heightPixels / dm.widthPixels;
+        mScreenBitmap = Bitmap.createBitmap((int)ws, (int)hs, Bitmap.Config.RGB_565);
 
 
         // start
@@ -64,8 +81,42 @@ public class MainService extends Service {
                 b = BitmapUtils.getDefaultImage(getApplicationContext());
             }
 
+            // clear
+            mScreenBitmap.eraseColor(0);
+
+            // find screen size
+            double ws = mScreenBitmap.getWidth();
+            double hs = mScreenBitmap.getHeight();
+            // find image size
+            double hi = b.getHeight();
+            double wi = b.getWidth();
+
+            // find ratio
+            double rs = ws / hs;
+            double ri = wi / hi;
+
+            // scale to fit
+            int w;
+            int h;
+            if(rs > ri) {
+                w = (int)(wi * hs/hi);
+                h = (int)hs;
+            }
+            else {
+                w = (int)ws;
+                h = (int)(hi * ws / wi);
+            }
+
+            // center
+            int top = (int)(hs - h) / 2;
+            int left = (int)(ws - w) / 2;
+
+            Canvas c = new Canvas(mScreenBitmap);
+            c.drawBitmap(b, new Rect(0, 0, (int)wi, (int)hi), new Rect(left, top, left + w, top + h), new Paint());
+
+            // set
             try {
-                mWallpaperManager.setBitmap(b);
+                mWallpaperManager.setBitmap(mScreenBitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }

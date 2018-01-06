@@ -21,7 +21,7 @@ public class StreamDatabaseHelper extends SQLiteOpenHelper {
         String create = "CREATE TABLE IF NOT EXISTS " + StreamContract.TABLE + "(" +
                 StreamContract.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 StreamContract.TITLE + " TEXT, " +
-                StreamContract.DATE + " DATE, " +
+                StreamContract.DATE + " DATETIME, " +
                 StreamContract.URL + " TEXT, " +
                 StreamContract.LINK + " TEXT, " +
                 StreamContract.IMAGEBLOB + " BLOB, " +

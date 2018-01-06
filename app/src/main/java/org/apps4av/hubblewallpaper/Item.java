@@ -1,5 +1,10 @@
 package org.apps4av.hubblewallpaper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by zkhan on 1/1/18.
  */
@@ -49,6 +54,20 @@ public class Item {
 
     public void setDescription(String description) {
         mDescription = description;
+    }
+
+    public static String formatDate(String webDate) {
+        // convert hubble time to sqlite time
+        DateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy kk:mm:ss Z");
+        try {
+            Date result =  df.parse(webDate);
+            df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+            return df.format(result);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }

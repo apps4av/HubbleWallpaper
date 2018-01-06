@@ -44,10 +44,14 @@ public class MainActivity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getLoaderManager().initLoader(STREAM_LOADER_ID,
                 new Bundle(), mStreamLoader);
     }
-
 
     // Defines the asynchronous callback for the data loader
     private LoaderManager.LoaderCallbacks<Cursor> mStreamLoader =
