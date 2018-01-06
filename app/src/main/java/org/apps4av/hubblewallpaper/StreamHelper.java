@@ -17,19 +17,9 @@ public class StreamHelper {
 
         for (Item i : items) {
 
-            String selection = StreamContract.DATE + "= ?";
             String date = Item.formatDate(i.getDate());
             if(null == date) {
                 continue;
-            }
-            String selectionArg[] = new String[] {date};
-
-            Cursor c = ctx.getContentResolver().query(StreamContract.CONTENT_URI, null, selection, selectionArg, StreamContract.DATE + " DESC");
-            if (null != c) {
-                if (c.moveToFirst()) {
-                    // already in, do not insert
-                    return;
-                }
             }
 
             // New image, download
@@ -45,7 +35,12 @@ public class StreamHelper {
                     values.put(StreamContract.LINK, i.getLink());
                     values.put(StreamContract.IMAGEBLOB, BitmapUtils.getBytes(b));
                     values.put(StreamContract.DESCRIPTION, i.getDescription());
-                    ctx.getContentResolver().insert(StreamContract.CONTENT_URI, values);
+                    try {
+                        ctx.getContentResolver().insert(StreamContract.CONTENT_URI, values);
+                    }
+                    catch (Exception e) {
+                        // already exists
+                    }
                 }
             }
         }

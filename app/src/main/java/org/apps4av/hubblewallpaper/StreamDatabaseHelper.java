@@ -25,7 +25,8 @@ public class StreamDatabaseHelper extends SQLiteOpenHelper {
                 StreamContract.URL + " TEXT, " +
                 StreamContract.LINK + " TEXT, " +
                 StreamContract.IMAGEBLOB + " BLOB, " +
-                StreamContract.DESCRIPTION + " TEXT)";
+                StreamContract.DESCRIPTION + " TEXT, " +
+                "UNIQUE(" + StreamContract.DATE + "))";
         db.execSQL(create);
     }
 

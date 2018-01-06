@@ -58,7 +58,7 @@ public class StreamProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI");
         }
 
-        long id = mDatabaseHelper.getWritableDatabase().insert(
+        long id = mDatabaseHelper.getWritableDatabase().insertOrThrow(
                 StreamContract.TABLE,
                 null,
                 values);
