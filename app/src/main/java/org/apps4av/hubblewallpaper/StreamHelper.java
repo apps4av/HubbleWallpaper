@@ -22,6 +22,18 @@ public class StreamHelper {
                 continue;
             }
 
+            // Save download hassle of JPEG
+            String selection = StreamContract.DATE + "= ?";
+            String selectionArg[] = new String[] {date};
+            Cursor c = ctx.getContentResolver().query(StreamContract.CONTENT_URI, null, selection, selectionArg, StreamContract.DATE + " DESC");
+            if (null != c) {
+                if (c.moveToFirst()) {
+                    // already in, do not insert
+                    continue;
+                }
+            }
+
+
             // New image, download
             Bitmap b = BitmapUtils.getBitmapFromURL(i.getUrl());
 
