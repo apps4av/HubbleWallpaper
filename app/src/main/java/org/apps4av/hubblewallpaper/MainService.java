@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 /**
  * Created by zkhan on 1/1/18.
@@ -29,6 +28,9 @@ public class MainService extends Service {
     private WallpaperManager mWallpaperManager;
 
     private Bitmap mScreenBitmap;
+    private Long mLastPerform;
+
+    private static final long TIMEOUT_MS = 60 * 60 * 1000;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -44,6 +46,8 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mLastPerform = System.currentTimeMillis() - TIMEOUT_MS;
 
         mWallpaperManager
                 = WallpaperManager.getInstance(getApplicationContext());
@@ -87,6 +91,11 @@ public class MainService extends Service {
      * Does everything in background
      */
     private void performChange() {
+
+        if((System.currentTimeMillis() - mLastPerform) < TIMEOUT_MS) {
+            // Do not perform again until some time has passed.
+            return;
+        }
 
         StreamHelper.insert(getApplicationContext(), StreamParser.parse(getApplicationContext()));
 
@@ -136,6 +145,8 @@ public class MainService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mLastPerform = System.currentTimeMillis();
     }
 
     // A way to start refresh thread

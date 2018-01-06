@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class StreamDatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DBNAME = "hstream.db";
+    private static final String DBNAME = "hubble_stream.db";
 
     public StreamDatabaseHelper(Context context) {
         super(context, DBNAME, null, 1);
